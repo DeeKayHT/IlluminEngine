@@ -10,4 +10,5 @@ Currently IlluminEngine builds only as a 32-bit application on Windows.
 ---
 ### Tutorials
 This project is following exercises from http://learnopengl.com/ while using SDL exercises from http://lazyfoo.net/tutorials/SDL/index.php
+
 Progress: http://learnopengl.com/#!Getting-started/Hello-Triangle
