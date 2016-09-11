@@ -5,7 +5,7 @@ Despite its fancy name, this is only intended as an educational exercise for me 
 * How to program with OpenGL from basic to advanced rendering techniques
 * Learn and the ins and outs of a game engine by creating one from scratch
 
-Currently IlluminEngine builds only as a 32-bit application on Windows.
+Currently IlluminEngine builds only as a 32-bit application on Windows using Visual Studio 2015.
 
 ---
 ### Tutorials
