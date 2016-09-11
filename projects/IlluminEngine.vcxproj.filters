@@ -18,5 +18,16 @@
     <ClCompile Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
