@@ -157,12 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.cpp" />
-    <ClCompile Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\render.cpp" />
+    <ClCompile Include="..\src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.h" />
-    <ClInclude Include="..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.h" />
+    <ClInclude Include="..\src\main.h" />
+    <ClInclude Include="..\src\render.h" />
+    <ClInclude Include="..\src\shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

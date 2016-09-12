@@ -3,9 +3,11 @@
 
 #include "main.h"
 #include "render.h"
+#include "shader.h"
 
-static GLuint gCurShaderProgram = 0;
+static Shader gCurShader;
 static GLuint gVAO = 0;
+
 
 void RenderSetup()
 {
@@ -16,69 +18,15 @@ void RenderSetup()
 
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
-
-	// TODO: Create file loader!
-	SDL_RWops* vertFile = SDL_RWFromFile("..\\data\\shaders\\basic.vert", "r");
-	size_t vertFileSize = static_cast<size_t>(SDL_RWsize(vertFile));
-	void* vertShaderBuffer = malloc(vertFileSize);
-	SDL_RWread(vertFile, vertShaderBuffer, vertFileSize, 1);
-
-	// Load and compile the basic vertex shader
-	// TODO: Use proper types, not C type-casting!
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, (GLchar**)&vertShaderBuffer, (GLint*)&vertFileSize);
-	glCompileShader(vertexShader);
-
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vertexShader, sizeof(infoLog), NULL, infoLog);
-		printf("%s\n", infoLog);
-	}
-
-
-	// TODO: Create file loader!
-	SDL_RWops* fragFile = SDL_RWFromFile("..\\data\\shaders\\basic.frag", "r");
-	size_t fragFileSize = static_cast<size_t>(SDL_RWsize(fragFile));
-	void* fragShaderBuffer = malloc(fragFileSize);
-	SDL_RWread(fragFile, fragShaderBuffer, fragFileSize, 1);
-
-	// Load and compile the basic fragment shader
-	// TODO: Use proper types, not C type-casting!
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, (GLchar**)&fragShaderBuffer, (GLint*)&fragFileSize);
-	glCompileShader(fragmentShader);
-
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(fragmentShader, sizeof(infoLog), NULL, infoLog);
-		printf("%s\n", infoLog);
-	}
-
-	// Attach the shaders to a program to be used
-	gCurShaderProgram = glCreateProgram();
-	glAttachShader(gCurShaderProgram, vertexShader);
-	glAttachShader(gCurShaderProgram, fragmentShader);
-	glLinkProgram(gCurShaderProgram);
-
-	glGetProgramiv(gCurShaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(gCurShaderProgram, sizeof(infoLog), NULL, infoLog);
-		printf("%s\n", infoLog);
-	}
-
-	// The shaders are no longer needed once linked to a program
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
+	gCurShader.Load("basic", "basic");
 
 	// Setup basic rectangle
 	GLfloat vertices[] = {
-		0.5f, 0.5f, 0.0f,	// Top Right
-		0.5f, -0.5f, 0.0f,	// Bottom Right
-		-0.5f, -0.5f, 0.0f,	// Bottom Left
-		-0.5f,  0.5f, 0.0f,	// Top Left
+		// Position				// Color
+		0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	// Top Right
+		0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	// Bottom Right
+		-0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	// Bottom Left
+		-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	// Top Left
 	};
 	GLuint indices[] = {
 		0, 1, 3,	// Triangle 1
@@ -104,25 +52,29 @@ void RenderSetup()
 
 	// Explanation:
 	// - 1st parameter is which the index to send the data to. In basic.vert shader this is (location = 0)
-	// - 2nd parameter is the size of each vertex attribute. It's a vec3 (for position) so it has 3 values.
+	// - 2nd parameter is the size of the vertex attribute. It's a vec3 (for position) so it has 3 values.
 	// - 3rd parameter is the type of the data, which are floats.
 	// - 4th parameter sets whether the data should be normalized.
-	// - 5th parameter is stride between each vertex's data. Data only has position, which is 3 floats.
-	// - Last parameter is offset where this data begins. It is set to 0 because there is no offset.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	// - 5th parameter is stride between each vertex's data. Data has position + color, which are 6 floats.
+	// - Last parameter is offset where this data begins.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	// Unbind the VBO and VAO to prevent any subsequent OpenGL calls from potentially modifying it
 	glBindBuffer(GL_ARRAY_BUFFER, 0);	// Okay to unbind VBO since vertexAttribute registered the VBO
 	glBindVertexArray(0);
 }
 
+
 void Render()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(gCurShaderProgram);
+	glUseProgram(gCurShader.GetProgramID());
 	glBindVertexArray(gVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
