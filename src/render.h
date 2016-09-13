@@ -2,5 +2,6 @@
 
 #include "GL/glew.h"
 
-void RenderSetup();
+void Render_Setup();
+void Render_Shutdown();
 void Render();

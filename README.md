@@ -11,4 +11,9 @@ Currently IlluminEngine builds only as a 32-bit application on Windows using Vis
 ### Tutorials
 This project is following exercises from http://learnopengl.com/ while using SDL exercises from http://lazyfoo.net/tutorials/SDL/index.php
 
-Progress: http://learnopengl.com/#!Getting-started/Textures
+Progress: http://learnopengl.com/#!Getting-started/Transformations
+
+---
+### Legal / Special Thanks
+* Thanks to Sean T. Barrett for the super easy and tiny stb library (https://github.com/nothings/stb)
+* Legal for other libraries can be found in /docs

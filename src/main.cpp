@@ -53,6 +53,7 @@ static void HardwareInfo()
 
 static void Shutdown()
 {
+	Render_Shutdown();
 	if (gSDL_window != nullptr) {
 		SDL_DestroyWindow(gSDL_window);
 	}
@@ -81,7 +82,7 @@ int main( int argc, char* argv[] )
 	}
 
 	HardwareInfo();
-	RenderSetup();
+	Render_Setup();
 	
 	while (!gQuit) {
 		ProcessEvents();
