@@ -4,6 +4,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "main.h"
 #include "render.h"
 #include "shader.h"
@@ -146,6 +150,17 @@ void Render()
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, gTexture[1]);
 	glUniform1i(glGetUniformLocation(gCurShader.GetProgramID(), "mTexture2"), 1);
+
+	// Modify transformation per frame
+	float seconds = static_cast<float>(SDL_GetTicks()) / 1000.0f;
+	// Due to how matrix multiplication works, the transform applies from last to first (rotate, then scale, then translate)
+	glm::mat4 transform;	// Default creates identity matrix
+	transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+	transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
+	transform = glm::rotate(transform, glm::radians(seconds * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	
+	GLuint transformLocation = glGetUniformLocation(gCurShader.GetProgramID(), "transform");
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glUseProgram(gCurShader.GetProgramID());
 	glBindVertexArray(gVAO);
