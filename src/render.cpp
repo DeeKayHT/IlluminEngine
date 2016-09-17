@@ -16,63 +16,99 @@ static Shader gCurShader;
 static GLuint gVAO = 0;
 static GLuint gTexture[2] = { 0 };
 
+static int gWidth = 0;
+static int gHeight = 0;
+
 
 void Render_Setup()
 {
 	// Setup Viewport
-	int width, height;	// Resolution (TODO: Get resolution from data)
-	SDL_GetWindowSize(GetWindow() , &width, &height);
-	glViewport(0, 0, width, height);
+	SDL_GetWindowSize(GetWindow() , &gWidth, &gHeight);
+	glViewport(0, 0, gWidth, gHeight);
 
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
 
-	// Setup basic rectangle
+	glEnable(GL_DEPTH_TEST);
+
+	// Setup cube
 	GLfloat vertices[] = {
-		// Position				// Color			// Texture UVs
-		0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f,	// Top Right
-		0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	1.0f, 0.0f,	// Bottom Right
-		-0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	0.0f, 0.0f,	// Bottom Left
-		-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f,	// Top Left
+		// Position           UVs
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
-	GLuint indices[] = {
-		0, 1, 3,	// Triangle 1
-		1, 2, 3,	// Triangle 2
-	};
+
 
 	// Create a VAO to store vertex attribute data with VBOs
 	glGenVertexArrays(1, &gVAO);
 	glBindVertexArray(gVAO);	// Subsequent OpenGL calls with VBOs and vertex attributes will affect this VAO
 
-								// Create a vertex buffer object (VBO) to send
-								// vertex data to the GPU as a single data stream
+	// Create a vertex buffer object (VBO) to send
+	// vertex data to the GPU as a single data stream
 	GLuint VBO;
 	glGenBuffers(1, &VBO);				// Create one VBO and store it in variable VBO
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);	// Bind VBO to the GL_ARRAY_BUFFER target
 										// Now send the vertex data to the VBO target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	GLuint EBO;
+	/*GLuint EBO;
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	*/
 
 	// Explanation:
 	// - 1st parameter is which the index to send the data to. In basic.vert shader this is (location = 0)
 	// - 2nd parameter is the size of the vertex attribute. It's a vec3 (for position) so it has 3 values.
 	// - 3rd parameter is the type of the data, which are floats.
 	// - 4th parameter sets whether the data should be normalized.
-	// - 5th parameter is stride between each vertex's data. Data has position, color + uvs, which are 8 floats.
+	// - 5th parameter is stride between each vertex's data. Data has position + uvs, which are 5 floats.
 	// - Last parameter is offset where this data begins.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
 
 	// Unbind the VBO and VAO to prevent any subsequent OpenGL calls from potentially modifying it
 	glBindBuffer(GL_ARRAY_BUFFER, 0);	// Okay to unbind VBO since vertexAttribute registered the VBO
@@ -141,7 +177,7 @@ void Render_Shutdown()
 void Render()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gTexture[0]);
@@ -153,18 +189,42 @@ void Render()
 
 	// Modify transformation per frame
 	float seconds = static_cast<float>(SDL_GetTicks()) / 1000.0f;
+
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
 	// Due to how matrix multiplication works, the transform applies from last to first (rotate, then scale, then translate)
-	glm::mat4 transform;	// Default creates identity matrix
-	transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-	transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
-	transform = glm::rotate(transform, glm::radians(seconds * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	
-	GLuint transformLocation = glGetUniformLocation(gCurShader.GetProgramID(), "transform");
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+	glm::mat4 view;
+	glm::mat4 projection;
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	projection = glm::perspective(glm::radians(45.0f), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
+	
+	GLuint modelLocation = glGetUniformLocation(gCurShader.GetProgramID(), "model");
+	GLuint viewLocation = glGetUniformLocation(gCurShader.GetProgramID(), "view");
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+	GLuint projectionLocation = glGetUniformLocation(gCurShader.GetProgramID(), "projection");
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
 	glUseProgram(gCurShader.GetProgramID());
 	glBindVertexArray(gVAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	for (GLuint i = 0; i < 10; i++) {
+		glm::mat4 model;	// Default creates identity matrix
+		model = glm::translate(model, cubePositions[i]);
+		model = glm::rotate(model, seconds * glm::radians(-5.0f * (i + 1)), glm::vec3(0.5f, 1.0f, 0.0f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 	glBindVertexArray(0);
 
 	// Swap buffers
