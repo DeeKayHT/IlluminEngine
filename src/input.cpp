@@ -38,6 +38,11 @@ void Input_Process()
 			gKeyPressed[event.key.keysym.scancode] = false;
 		}
 	}
+	// Have Esc also quit!
+	if (gKeyPressed[SDL_SCANCODE_ESCAPE]) {
+		gEventQuit = true;
+	}
+
 
 	// All time units are in milliseconds
 	static uint32_t sPrevTime = 0;
