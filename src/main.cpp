@@ -2,14 +2,22 @@
 #include <stdio.h>
 
 #include "main.h"
+#include "input.h"
 #include "render.h"
 
 const int DEFAULT_SCREEN_X = 1280;
 const int DEFAULT_SCREEN_Y = 720;
 
+
+// ----------------------------------------------------
+// Local Variables
+// ----------------------------------------------------
+
 static SDL_Window* gSDL_window = nullptr;
 static bool gQuit = false;
 
+
+// ----------------------------------------------------
 static int Init()
 {
 	uint32_t initFlags = SDL_INIT_VIDEO;
@@ -61,15 +69,6 @@ static void Shutdown()
 	SDL_Quit();
 }
 
-static void ProcessEvents()
-{
-	SDL_Event event;
-	while (SDL_PollEvent(&event) != 0) {
-		if (event.type == SDL_QUIT) {
-			gQuit = true;
-		}
-	}
-}
 
 SDL_Window* GetWindow() { return gSDL_window; }
 
@@ -84,8 +83,8 @@ int main( int argc, char* argv[] )
 	HardwareInfo();
 	Render_Setup();
 	
-	while (!gQuit) {
-		ProcessEvents();
+	while (!Input_GetQuitStatus()) {
+		Input_Process();
 		Render();
 	}
 	

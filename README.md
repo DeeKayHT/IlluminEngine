@@ -17,4 +17,4 @@ This project is following exercises from http://learnopengl.com/ while using SDL
 ---
 ### Legal / Special Thanks
 * Thanks to Sean T. Barrett for the super easy and tiny [stb-library](https://github.com/nothings/stb)
-* Legal for other libraries can be found in /docs
+* Legal for GLEW, SDL and GLM can be found in /docs

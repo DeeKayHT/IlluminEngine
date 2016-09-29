@@ -11,6 +11,19 @@
 #include "main.h"
 #include "render.h"
 #include "shader.h"
+#include "camera.h"
+
+
+// ----------------------------------------------------
+// Global Variables
+// ----------------------------------------------------
+
+Camera gCamera;
+
+
+// ----------------------------------------------------
+// Local Variables
+// ----------------------------------------------------
 
 static Shader gCurShader;
 static GLuint gVAO = 0;
@@ -19,6 +32,8 @@ static GLuint gTexture[2] = { 0 };
 static int gWidth = 0;
 static int gHeight = 0;
 
+
+// ----------------------------------------------------
 
 void Render_Setup()
 {
@@ -163,6 +178,10 @@ void Render_Setup()
 	// Texture cleanup
 	stbi_image_free(textureData);		// Texture loaded into OpenGL, no longer needed in memory!
 	glBindTexture(GL_TEXTURE_2D, 0);	// Unbind the texture so future texture calls don't modify it!
+
+
+	// Set the initial camera position
+	gCamera.SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 }
 
 void Render_Shutdown()
@@ -203,16 +222,15 @@ void Render()
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
-	// Due to how matrix multiplication works, the transform applies from last to first (rotate, then scale, then translate)
-	
-	glm::mat4 view;
+	// Setup the camera's view matrix
+	glm::mat4* view = gCamera.GetViewMatrix();
+
 	glm::mat4 projection;
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 	projection = glm::perspective(glm::radians(45.0f), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
 	
 	GLuint modelLocation = glGetUniformLocation(gCurShader.GetProgramID(), "model");
 	GLuint viewLocation = glGetUniformLocation(gCurShader.GetProgramID(), "view");
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(*view));
 	GLuint projectionLocation = glGetUniformLocation(gCurShader.GetProgramID(), "projection");
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 

@@ -157,11 +157,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\camera.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\render.cpp" />
     <ClCompile Include="..\src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\camera.h" />
     <ClInclude Include="..\src\main.h" />
     <ClInclude Include="..\src\render.h" />
     <ClInclude Include="..\src\shader.h" />
