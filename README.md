@@ -12,7 +12,7 @@ Currently IlluminEngine builds only as a 32-bit application on Windows using Vis
 ---
 ### Tutorials
 This project is following exercises from http://learnopengl.com/ while using SDL exercises from http://lazyfoo.net/tutorials/SDL/index.php
-* Progress: [Getting Started: Camera](http://learnopengl.com/#!Getting-started/Camera)
+* Progress: [Lighting: Colors](http://learnopengl.com/#!Lighting/Colors)
 
 ---
 ### Legal / Special Thanks

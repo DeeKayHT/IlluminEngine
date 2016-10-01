@@ -226,7 +226,6 @@ void Render()
 	glm::mat4* view = gCamera.GetViewMatrix();
 
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
 	
 	GLuint modelLocation = glGetUniformLocation(gCurShader.GetProgramID(), "model");
 	GLuint viewLocation = glGetUniformLocation(gCurShader.GetProgramID(), "view");

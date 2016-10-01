@@ -17,13 +17,18 @@ private:
 	glm::mat4 mView;
 
 	float mSpeed;
+	float mFOV;		// Field of View (units in degrees)
 
 public:
 	Camera();
 	~Camera();
 
 	void SetPosition(const glm::vec3 position);
-	glm::mat4* GetViewMatrix();
+	glm::mat4*	GetViewMatrix();
+	float		GetFoV();
 
 	void Move(Axis_e axis, bool isPositive, float deltaTime);
+	void Rotate();
+	void Zoom(int32_t zoom);
+	void ProcessInputs(float deltaTime);
 };
