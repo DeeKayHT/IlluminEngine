@@ -26,7 +26,9 @@ Camera gCamera;
 // ----------------------------------------------------
 
 static Shader gCurShader;
+static Shader gLightShader;
 static GLuint gVAO = 0;
+static GLuint glightVAO = 0;
 static GLuint gTexture[2] = { 0 };
 
 static int gWidth = 0;
@@ -44,6 +46,7 @@ void Render_Setup()
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
+	gLightShader.Load("light", "light");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -124,6 +127,19 @@ void Render_Setup()
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+
+
+	// Create a new VAO for the light cube
+	glGenVertexArrays(1, &glightVAO);
+	glBindVertexArray(glightVAO);	// Subsequent OpenGL calls with VBOs and vertex attributes will affect this VAO
+
+	// Bind VBO to the GL_ARRAY_BUFFER target
+	// Can reuse the same VBO as above since it uses the same cube vertices
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
 
 	// Unbind the VBO and VAO to prevent any subsequent OpenGL calls from potentially modifying it
 	glBindBuffer(GL_ARRAY_BUFFER, 0);	// Okay to unbind VBO since vertexAttribute registered the VBO
@@ -206,21 +222,15 @@ void Render()
 	glBindTexture(GL_TEXTURE_2D, gTexture[1]);
 	glUniform1i(glGetUniformLocation(gCurShader.GetProgramID(), "mTexture2"), 1);
 
+	GLint objColorLoc = glGetUniformLocation(gLightShader.GetProgramID(), "objColor");
+	glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
+	GLint lightColorLoc = glGetUniformLocation(gLightShader.GetProgramID(), "lightColor");
+	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+
 	// Modify transformation per frame
 	float seconds = static_cast<float>(SDL_GetTicks()) / 1000.0f;
 
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
+
 
 	// Setup the camera's view matrix
 	glm::mat4* view = gCamera.GetViewMatrix();
@@ -228,21 +238,30 @@ void Render()
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(gCamera.GetFoV()), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
 	
-	GLuint modelLocation = glGetUniformLocation(gCurShader.GetProgramID(), "model");
-	GLuint viewLocation = glGetUniformLocation(gCurShader.GetProgramID(), "view");
+	GLuint modelLocation = glGetUniformLocation(gLightShader.GetProgramID(), "model");
+	GLuint viewLocation = glGetUniformLocation(gLightShader.GetProgramID(), "view");
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(*view));
-	GLuint projectionLocation = glGetUniformLocation(gCurShader.GetProgramID(), "projection");
+	GLuint projectionLocation = glGetUniformLocation(gLightShader.GetProgramID(), "projection");
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
-	glUseProgram(gCurShader.GetProgramID());
+	glUseProgram(gLightShader.GetProgramID());
 	glBindVertexArray(gVAO);
-	for (GLuint i = 0; i < 10; i++) {
-		glm::mat4 model;	// Default creates identity matrix
-		model = glm::translate(model, cubePositions[i]);
-		model = glm::rotate(model, seconds * glm::radians(-5.0f * (i + 1)), glm::vec3(0.5f, 1.0f, 0.0f));
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
+	glm::mat4 model;	// Default creates identity matrix
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 2.0f));
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+
+	// Draw the light cube
+	glUniform3f(objColorLoc, 1.0f, 1.0f, 1.0f);
+
+	glUseProgram(gLightShader.GetProgramID());
+	glBindVertexArray(glightVAO);
+	model = glm::mat4();	// Default creates identity matrix
+	model = glm::translate(model, glm::vec3(1.2f, 1.0f, 2.0f));
+	model = glm::scale(model, glm::vec3(0.2f));
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
 	// Swap buffers
