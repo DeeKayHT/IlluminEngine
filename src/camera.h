@@ -11,7 +11,6 @@ typedef enum
 class Camera
 {
 private:
-	glm::vec3 mPosition;
 	glm::vec3 mDirection;
 	glm::vec3 mUp;
 	glm::mat4 mView;
@@ -20,6 +19,8 @@ private:
 	float mFOV;		// Field of View (units in degrees)
 
 public:
+	glm::vec3 mPosition;
+
 	Camera();
 	~Camera();
 
