@@ -227,14 +227,35 @@ void Render()
 
 	Light pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-	GLint objColorLoc = glGetUniformLocation(gLightShader.GetProgramID(), "objColor");
+	uint32_t programID = gLightShader.GetProgramID();
+	GLint objColorLoc = glGetUniformLocation(programID, "objColor");
 	glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
-	GLint lightColorLoc = glGetUniformLocation(gLightShader.GetProgramID(), "lightColor");
-	glUniform3fv(lightColorLoc, 1, glm::value_ptr(pointLight.mColor));
-	GLint lightPosLoc = glGetUniformLocation(gLightShader.GetProgramID(), "lightPos");
-	glUniform3fv(lightPosLoc, 1, glm::value_ptr(pointLight.mPosition));
-	GLint viewPosLoc = glGetUniformLocation(gLightShader.GetProgramID(), "viewPos");
+	GLint viewPosLoc = glGetUniformLocation(programID, "viewPos");
 	glUniform3fv(viewPosLoc, 1, glm::value_ptr(gCamera.mPosition));
+
+	// Material Data
+	GLint matAmbientLoc = glGetUniformLocation(programID, "material.ambient");
+	GLint matDiffuseLoc = glGetUniformLocation(programID, "material.diffuse");
+	GLint matSpecularLoc = glGetUniformLocation(programID, "material.specular");
+	GLint matShinyLoc = glGetUniformLocation(programID, "material.shininess");
+
+	glUniform3f(matAmbientLoc, 1.0f, 0.5f, 0.31f);
+	glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
+	glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
+	glUniform1f(matShinyLoc, 32.0f);
+
+
+	// Light data
+	GLint lightPositionLoc = glGetUniformLocation(programID, "light.position");
+	GLint lightAmbientLoc = glGetUniformLocation(programID, "light.ambient");
+	GLint lightDiffuseLoc = glGetUniformLocation(programID, "light.diffuse");
+	GLint lightSpecularLoc = glGetUniformLocation(programID, "light.specular");
+
+	glUniform3fv(lightPositionLoc, 1, glm::value_ptr(pointLight.mPosition));
+	glUniform3f(lightAmbientLoc,  0.2f, 0.2f, 0.2f);
+	glUniform3f(lightDiffuseLoc,  0.5f, 0.5f, 0.5f);
+	glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+	
 
 	// Modify transformation per frame
 	float seconds = static_cast<float>(SDL_GetTicks()) / 1000.0f;
