@@ -35,6 +35,19 @@ static GLuint gTexture[2] = { 0 };
 static int gWidth = 0;
 static int gHeight = 0;
 
+static glm::vec3 gCubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
 
 // ----------------------------------------------------
 
@@ -47,54 +60,54 @@ void Render_Setup()
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
-	gLightShader.Load("light", "light");
+	gLightShader.Load("light_directional", "light_directional");
 
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup cube
 	GLfloat vertices[] = {
-		// Position           Normals
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		// Position           Normals				Texture Coords
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	1.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	1.0f,  1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	0.0f,  0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	1.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,	0.0f,  0.0f,
 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,	1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,	1.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,	0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,	0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,	0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,	1.0f,  0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,	1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,	1.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,	0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,	0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,	0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,	1.0f,  0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,	0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,	1.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,	1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,	1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,	0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,	0.0f,  1.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,	0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,	1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,	1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,	1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,	0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,	0.0f,  1.0f
 	};
 
 
@@ -110,25 +123,22 @@ void Render_Setup()
 										// Now send the vertex data to the VBO target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	/*GLuint EBO;
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	*/
 
 	// Explanation:
 	// - 1st parameter is which the index to send the data to. In basic.vert shader this is (location = 0)
 	// - 2nd parameter is the size of the vertex attribute. It's a vec3 (for position) so it has 3 values.
 	// - 3rd parameter is the type of the data, which are floats.
 	// - 4th parameter sets whether the data should be normalized.
-	// - 5th parameter is stride between each vertex's data. Data has position + normals, which are 6 floats.
+	// - 5th parameter is stride between each vertex's data. Data has position + normals + uvs, which are 8 floats.
 	// - Last parameter is offset where this data begins.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
 
 
 	// Create a new VAO for the light cube
@@ -139,10 +149,12 @@ void Render_Setup()
 	// Can reuse the same VBO as above since it uses the same cube vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
 
 	// Unbind the VBO and VAO to prevent any subsequent OpenGL calls from potentially modifying it
 	glBindBuffer(GL_ARRAY_BUFFER, 0);	// Okay to unbind VBO since vertexAttribute registered the VBO
@@ -154,7 +166,7 @@ void Render_Setup()
 	// Enforce the image loaded to have 3-components per pixel (RGB)
 	// TODO: Flip the image before sending to OpenGL
 	int texWidth, texHeight, bytesPerPixel;
-	unsigned char* textureData = stbi_load("../data/textures/brick.jpg", &texWidth, &texHeight, &bytesPerPixel, 3);
+	unsigned char* textureData = stbi_load("../data/textures/container2.png", &texWidth, &texHeight, &bytesPerPixel, 3);
 	if (textureData == NULL)
 		return;
 
@@ -177,7 +189,7 @@ void Render_Setup()
 
 	// -------------------------------------------------------------
 	// Load texture2
-	textureData = stbi_load("../data/textures/face.jpg", &texWidth, &texHeight, &bytesPerPixel, 3);
+	textureData = stbi_load("../data/textures/container2_specular.png", &texWidth, &texHeight, &bytesPerPixel, 3);
 	if (textureData == NULL)
 		return;
 
@@ -216,17 +228,17 @@ void Render()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gTexture[0]);
-	glUniform1i( glGetUniformLocation(gCurShader.GetProgramID(), "mTexture1"), 0 );
+	glUniform1i(glGetUniformLocation(gCurShader.GetProgramID(), "mTexture1"), 0);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, gTexture[1]);
 	glUniform1i(glGetUniformLocation(gCurShader.GetProgramID(), "mTexture2"), 1);
 
-	Light pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-
+	
 	uint32_t programID = gLightShader.GetProgramID();
 	GLint objColorLoc = glGetUniformLocation(programID, "objColor");
 	glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
@@ -234,28 +246,27 @@ void Render()
 	glUniform3fv(viewPosLoc, 1, glm::value_ptr(gCamera.mPosition));
 
 	// Material Data
-	GLint matAmbientLoc = glGetUniformLocation(programID, "material.ambient");
 	GLint matDiffuseLoc = glGetUniformLocation(programID, "material.diffuse");
 	GLint matSpecularLoc = glGetUniformLocation(programID, "material.specular");
 	GLint matShinyLoc = glGetUniformLocation(programID, "material.shininess");
 
-	glUniform3f(matAmbientLoc, 1.0f, 0.5f, 0.31f);
-	glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
-	glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
+	glUniform1i(matDiffuseLoc, 0);
+	glUniform1i(matSpecularLoc, 1);
 	glUniform1f(matShinyLoc, 32.0f);
 
 
 	// Light data
-	GLint lightPositionLoc = glGetUniformLocation(programID, "light.position");
+	GLint lightPositionLoc = glGetUniformLocation(programID, "light.direction");
 	GLint lightAmbientLoc = glGetUniformLocation(programID, "light.ambient");
 	GLint lightDiffuseLoc = glGetUniformLocation(programID, "light.diffuse");
 	GLint lightSpecularLoc = glGetUniformLocation(programID, "light.specular");
 
-	glUniform3fv(lightPositionLoc, 1, glm::value_ptr(pointLight.mPosition));
-	glUniform3f(lightAmbientLoc,  0.2f, 0.2f, 0.2f);
-	glUniform3f(lightDiffuseLoc,  0.5f, 0.5f, 0.5f);
+	Light dirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f, 1.0f, 1.0f));
+	glUniform3fv(lightPositionLoc, 1, glm::value_ptr(dirLight.mDirection));
+	glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
+	glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 	glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-	
+
 
 	// Modify transformation per frame
 	float seconds = static_cast<float>(SDL_GetTicks()) / 1000.0f;
@@ -267,7 +278,7 @@ void Render()
 
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(gCamera.GetFoV()), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
-	
+
 	GLuint modelLocation = glGetUniformLocation(gLightShader.GetProgramID(), "model");
 	GLuint viewLocation = glGetUniformLocation(gLightShader.GetProgramID(), "view");
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(*view));
@@ -275,24 +286,19 @@ void Render()
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
 	glUseProgram(gLightShader.GetProgramID());
+	// Draw the cubes
 	glBindVertexArray(gVAO);
-	glm::mat4 model;	// Default creates identity matrix
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 2.0f));
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	for (uint32_t i = 0; i < 10; i++) {
+		float angle = 20.0f * i;
+
+		glm::mat4 model;	// Default creates identity matrix
+		model = glm::translate(model, gCubePositions[i]);
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
 	glBindVertexArray(0);
 
-	// Draw the light cube
-	glUniform3f(objColorLoc, 1.0f, 1.0f, 1.0f);
-
-	glUseProgram(gLightShader.GetProgramID());
-	glBindVertexArray(glightVAO);
-	model = glm::mat4();	// Default creates identity matrix
-	model = glm::translate(model, pointLight.mPosition);
-	model = glm::scale(model, glm::vec3(0.2f));
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
 
 	// Swap buffers
 	SDL_GL_SwapWindow(GetWindow());

@@ -5,8 +5,8 @@
 #include "input.h"
 #include "render.h"
 
-const int DEFAULT_SCREEN_X = 1280;
-const int DEFAULT_SCREEN_Y = 720;
+const int DEFAULT_SCREEN_X = 1600;
+const int DEFAULT_SCREEN_Y = 900;
 
 
 // ----------------------------------------------------

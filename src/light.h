@@ -4,7 +4,10 @@
 class Light
 {
 public:
-	glm::vec3	mPosition;
+	union {
+		glm::vec3	mPosition;
+		glm::vec3	mDirection;
+	};
 	glm::vec3	mColor;
 	float		mAmbientIntensity;
 
