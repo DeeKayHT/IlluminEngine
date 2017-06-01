@@ -11,9 +11,14 @@ struct Material_t
 struct Light_t
 {
 	vec3 position;
+	
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	
+	float constant;
+	float linear;
+	float quadratic;
 };
 
 in vec3 fPos;
@@ -28,6 +33,9 @@ uniform Light_t light;
 
 void main()
 {
+	float distance = length(light.position - fPos);
+	float attenuation = 1.0 / (light.constant + (light.linear * distance) + (light.quadratic * (distance * distance)));
+	
 	vec3 normal = normalize(fNormal);
 	vec3 lightDir = normalize(light.position - fPos);
 	
@@ -41,6 +49,10 @@ void main()
 	
 	float spec = pow( max( dot(viewDir, reflectDir), 0.0f), 32.0f);
 	vec3 specular = texture(material.specular, TexCoords).xyz * spec * light.specular;
+	
+	ambient *= attenuation;
+	diffuse *= attenuation;
+	specular *= attenuation;
 	
 	color = vec4(ambient + diffuse + specular, 1.0f);
 }

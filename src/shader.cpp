@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "SDL/SDL.h"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "shader.h"
 #include "main.h"
 
@@ -125,6 +127,36 @@ void Shader::Load(const char* vertexShaderName, const char* fragmentShaderName)
 	// The shaders are no longer needed once linked to a program
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragShader);
+}
+
+void Shader::SetInt(const char* name, const int32_t value)
+{
+	GLint location = glGetUniformLocation(mProgramID, name);
+	glUniform1i(location, value);
+}
+
+void Shader::SetFloat(const char* name, const float value)
+{
+	GLint location = glGetUniformLocation(mProgramID, name);
+	glUniform1f(location, value);
+}
+
+void Shader::SetVec3(const char* name, const glm::vec3& value)
+{
+	GLint location = glGetUniformLocation(mProgramID, name);
+	glUniform3fv(location, 1, glm::value_ptr(value));
+}
+
+void Shader::SetVec3(const char* name, const float x, const float y, const float z)
+{
+	GLint location = glGetUniformLocation(mProgramID, name);
+	glUniform3f(location, x, y, z);
+}
+
+void Shader::SetMat4(const char* name, const glm::mat4& value)
+{
+	GLint location = glGetUniformLocation(mProgramID, name);
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 uint32_t Shader::GetProgramID() { return mProgramID; }

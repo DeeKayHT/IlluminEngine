@@ -60,7 +60,7 @@ void Render_Setup()
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
-	gLightShader.Load("light_directional", "light_directional");
+	gLightShader.Load("light_point", "light_point");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -239,33 +239,23 @@ void Render()
 	glUniform1i(glGetUniformLocation(gCurShader.GetProgramID(), "mTexture2"), 1);
 
 	
-	uint32_t programID = gLightShader.GetProgramID();
-	GLint objColorLoc = glGetUniformLocation(programID, "objColor");
-	glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
-	GLint viewPosLoc = glGetUniformLocation(programID, "viewPos");
-	glUniform3fv(viewPosLoc, 1, glm::value_ptr(gCamera.mPosition));
+	// Camera Data
+	gLightShader.SetVec3("viewPos", gCamera.mPosition);
 
 	// Material Data
-	GLint matDiffuseLoc = glGetUniformLocation(programID, "material.diffuse");
-	GLint matSpecularLoc = glGetUniformLocation(programID, "material.specular");
-	GLint matShinyLoc = glGetUniformLocation(programID, "material.shininess");
-
-	glUniform1i(matDiffuseLoc, 0);
-	glUniform1i(matSpecularLoc, 1);
-	glUniform1f(matShinyLoc, 32.0f);
-
+	gLightShader.SetInt("material.diffuse", 0);
+	gLightShader.SetInt("material.specular", 1);
+	gLightShader.SetFloat("material.shininess", 32.0f);
 
 	// Light data
-	GLint lightPositionLoc = glGetUniformLocation(programID, "light.direction");
-	GLint lightAmbientLoc = glGetUniformLocation(programID, "light.ambient");
-	GLint lightDiffuseLoc = glGetUniformLocation(programID, "light.diffuse");
-	GLint lightSpecularLoc = glGetUniformLocation(programID, "light.specular");
-
-	Light dirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(1.0f, 1.0f, 1.0f));
-	glUniform3fv(lightPositionLoc, 1, glm::value_ptr(dirLight.mDirection));
-	glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
-	glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
-	glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+	Light pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	gLightShader.SetVec3("light.position", pointLight.mPosition);
+	gLightShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+	gLightShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+	gLightShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+	gLightShader.SetFloat("light.constant", 1.0f);
+	gLightShader.SetFloat("light.linear", 0.09f);
+	gLightShader.SetFloat("light.quadratic", 0.032f);
 
 
 	// Modify transformation per frame
@@ -275,15 +265,11 @@ void Render()
 
 	// Setup the camera's view matrix
 	glm::mat4* view = gCamera.GetViewMatrix();
-
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(gCamera.GetFoV()), (GLfloat)gWidth / (GLfloat)gHeight, 0.1f, 100.0f);
 
-	GLuint modelLocation = glGetUniformLocation(gLightShader.GetProgramID(), "model");
-	GLuint viewLocation = glGetUniformLocation(gLightShader.GetProgramID(), "view");
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(*view));
-	GLuint projectionLocation = glGetUniformLocation(gLightShader.GetProgramID(), "projection");
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+	gLightShader.SetMat4("view", *view);
+	gLightShader.SetMat4("projection", projection);
 
 	glUseProgram(gLightShader.GetProgramID());
 	// Draw the cubes
@@ -294,7 +280,7 @@ void Render()
 		glm::mat4 model;	// Default creates identity matrix
 		model = glm::translate(model, gCubePositions[i]);
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+		gLightShader.SetMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 	glBindVertexArray(0);
