@@ -11,42 +11,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\camera.cpp">
+    <ClCompile Include="..\..\src\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\input.cpp">
+    <ClCompile Include="..\..\src\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\light.cpp">
+    <ClCompile Include="..\..\src\light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.cpp">
+    <ClCompile Include="..\..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.cpp">
+    <ClCompile Include="..\..\src\render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\shader.cpp">
+    <ClCompile Include="..\..\src\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\camera.h">
+    <ClInclude Include="..\..\src\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\input.h">
+    <ClInclude Include="..\..\src\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\light.h">
+    <ClInclude Include="..\..\src\light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\main.h">
+    <ClInclude Include="..\..\src\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\render.h">
+    <ClInclude Include="..\..\src\render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\DK%27s Data\Projects\IlluminEngine\src\shader.h">
+    <ClInclude Include="..\..\src\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
