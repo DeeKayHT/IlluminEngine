@@ -11,10 +11,10 @@
 *.userprefs
 
 # Build results
-projects/[Dd]ebug/
-projects/[Rr]elease/
+projects/vs20*/[Dd]ebug/
+projects/vs20*/[Rr]elease/
 projects/x64/
-bin/*/*.exe
+bin/*
 x86/
 bld/
 [Oo]bj/

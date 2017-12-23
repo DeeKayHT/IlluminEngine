@@ -166,7 +166,7 @@ void Render_Setup()
 	// Enforce the image loaded to have 3-components per pixel (RGB)
 	// TODO: Flip the image before sending to OpenGL
 	int texWidth, texHeight, bytesPerPixel;
-	unsigned char* textureData = stbi_load("../data/textures/container2.png", &texWidth, &texHeight, &bytesPerPixel, 3);
+	unsigned char* textureData = stbi_load("../../data/textures/container2.png", &texWidth, &texHeight, &bytesPerPixel, 3);
 	if (textureData == NULL)
 		return;
 
@@ -189,7 +189,7 @@ void Render_Setup()
 
 	// -------------------------------------------------------------
 	// Load texture2
-	textureData = stbi_load("../data/textures/container2_specular.png", &texWidth, &texHeight, &bytesPerPixel, 3);
+	textureData = stbi_load("../../data/textures/container2_specular.png", &texWidth, &texHeight, &bytesPerPixel, 3);
 	if (textureData == NULL)
 		return;
 

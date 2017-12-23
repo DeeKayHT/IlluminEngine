@@ -34,7 +34,7 @@ GLuint Shader::LoadFile(const char* filename, GLenum shaderType)
 
 
 	char path[512];
-	snprintf(path, sizeof(path), "../data/shaders/%s%s", filename, shaderExt);
+	snprintf(path, sizeof(path), "../../data/shaders/%s%s", filename, shaderExt);
 
 
 	SDL_RWops* file = SDL_RWFromFile(path, "r");
