@@ -7,7 +7,8 @@ Despite the fancy name, this project is only intended as an educational exercise
 
 I figure giving it a name would push me to work on this project more than if it had some generic name like "TestProject."
 
-Currently IlluminEngine builds only as a 32-bit application on Windows using Visual Studio 2015.
+Currently IlluminEngine builds only as a 64-bit application on Windows using Visual Studio 2017.
+A project for Visual Studio 2015 exists, but is not maintained.
 
 ---
 ### Tutorials
