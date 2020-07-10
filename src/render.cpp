@@ -60,7 +60,7 @@ void Render_Setup()
 	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
-	gLightShader.Load("light_point", "light_point");
+	gLightShader.Load("light_directional", "light_directional");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -248,11 +248,18 @@ void Render()
 	gLightShader.SetFloat("material.shininess", 32.0f);
 
 	// Light data
-	Light pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-	gLightShader.SetVec3("light.position", pointLight.mPosition);
-	gLightShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-	gLightShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-	gLightShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightDir(-0.2f, -1.0f, -0.3f);
+
+
+	Light dirLight(lightDir);
+	dirLight.setAmbient(0.2f, 0.2f, 0.2f);
+	dirLight.setDiffuse(0.5f, 0.5f, 0.5f);
+	dirLight.setSpecular(1.0f, 1.0f, 1.0f);
+
+	gLightShader.SetVec3("light.direction", dirLight.mDirection);
+	gLightShader.SetVec3("light.ambient", dirLight.mAmbient);
+	gLightShader.SetVec3("light.diffuse", dirLight.mDiffuse);
+	gLightShader.SetVec3("light.specular", dirLight.mSpecular);
 	gLightShader.SetFloat("light.constant", 1.0f);
 	gLightShader.SetFloat("light.linear", 0.09f);
 	gLightShader.SetFloat("light.quadratic", 0.032f);
@@ -275,17 +282,13 @@ void Render()
 	// Draw the cubes
 	glBindVertexArray(gVAO);
 	for (uint32_t i = 0; i < 10; i++) {
-		float angle = 20.0f * i;
-
 		glm::mat4 model;	// Default creates identity matrix
 		model = glm::translate(model, gCubePositions[i]);
+
+		float angle = 20.0f * i;
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		gLightShader.SetMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 	glBindVertexArray(0);
-
-
-	// Swap buffers
-	SDL_GL_SwapWindow(GetWindow());
 }

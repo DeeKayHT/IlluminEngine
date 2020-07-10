@@ -1,3 +1,8 @@
+#include <cstring>
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+
 #include "SDL/SDL.h"
 
 #include "camera.h"
@@ -57,6 +62,8 @@ void Input_Process()
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event) != 0) {
+		ImGui_ImplSDL2_ProcessEvent(&event);
+
 		switch (event.type)
 		{
 		case SDL_QUIT:

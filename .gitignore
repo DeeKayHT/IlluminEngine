@@ -299,3 +299,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+projects/vs2017/imgui.ini

@@ -1,7 +1,12 @@
 
 #include <stdio.h>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "main.h"
+#include "imgui_game.h"
 #include "input.h"
 #include "render.h"
 
@@ -49,6 +54,13 @@ static int Init()
 		return -4;
 	}
 
+	// Setup Dear ImGui context
+	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForOpenGL(gSDL_window, &context);
+	ImGui_ImplOpenGL3_Init(NULL);
+	// ImGui style setup
+	ImGui::StyleColorsClassic();
+
 	return 0;
 }
 
@@ -82,10 +94,16 @@ int main( int argc, char* argv[] )
 
 	HardwareInfo();
 	Render_Setup();
+
+	SDL_GL_SetSwapInterval(0);
 	
 	while (!Input_GetQuitStatus()) {
 		Input_Process();
 		Render();
+		ImGui_Loop();
+
+		// Swap buffers
+		SDL_GL_SwapWindow(gSDL_window);
 	}
 	
 	Shutdown();

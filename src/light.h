@@ -8,8 +8,13 @@ public:
 		glm::vec3	mPosition;
 		glm::vec3	mDirection;
 	};
-	glm::vec3	mColor;
-	float		mAmbientIntensity;
+	glm::vec3	mAmbient;
+	glm::vec3	mDiffuse;
+	glm::vec3	mSpecular;
 
-	Light(glm::vec3 position, glm::vec3 color);
+	Light(glm::vec3 position);
+
+	void setAmbient(float r, float g, float b);
+	void setDiffuse(float r, float g, float b);
+	void setSpecular(float r, float g, float b);
 };

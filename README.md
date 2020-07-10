@@ -18,4 +18,5 @@ This project is following exercises from http://learnopengl.com/ while using SDL
 ---
 ### Legal / Special Thanks
 * Thanks to Sean T. Barrett for the super easy and tiny [stb-library](https://github.com/nothings/stb)
-* Legal for GLEW, SDL and GLM can be found in /docs
+* Thanks to ocornut for the powerful yet easy [Dear ImGui](https://github.com/ocornut/imgui) interface
+* Legal documentation for ImGui, GLEW, GLM, and SDL can be found in /docs
