@@ -82,7 +82,8 @@ static void Shutdown()
 }
 
 
-SDL_Window* GetWindow() { return gSDL_window; }
+void Game_SetQuitStatus(bool quit)	{ gQuit |= quit; }	// Always quit if set
+SDL_Window* GetWindow()				{ return gSDL_window; }
 
 
 int main( int argc, char* argv[] )
@@ -94,10 +95,8 @@ int main( int argc, char* argv[] )
 
 	HardwareInfo();
 	Render_Setup();
-
-	SDL_GL_SetSwapInterval(0);
 	
-	while (!Input_GetQuitStatus()) {
+	while (!gQuit) {
 		Input_Process();
 		Render();
 		ImGui_Loop();

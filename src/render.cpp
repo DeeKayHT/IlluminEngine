@@ -26,6 +26,7 @@ Camera gCamera;
 // Local Variables
 // ----------------------------------------------------
 
+static int32_t gVSyncMode = 0;
 static Shader gCurShader;
 static Shader gLightShader;
 static GLuint gVAO = 0;
@@ -51,13 +52,27 @@ static glm::vec3 gCubePositions[] = {
 
 // ----------------------------------------------------
 
+int32_t Render_GetVSync() { return gVSyncMode; }
+
+void Render_SetVSync(int8_t mode)
+{
+	if (mode != gVSyncMode) {
+		// Smart-vsync is activated by passing -1 to the SwapInterval function
+		if (mode == 2)
+			mode = -1;
+
+		gVSyncMode = mode;
+		SDL_GL_SetSwapInterval(gVSyncMode);
+	}
+}
+
 void Render_Setup()
 {
 	// Setup Viewport
 	SDL_GetWindowSize(GetWindow() , &gWidth, &gHeight);
 	glViewport(0, 0, gWidth, gHeight);
 
-	SDL_GL_SetSwapInterval(1);	// Set vsync for now to avoid running hardware to max
+	Render_SetVSync(1);	// Set vsync for now to avoid running hardware to max
 
 	gCurShader.Load("basic", "basic");
 	gLightShader.Load("light_directional", "light_directional");

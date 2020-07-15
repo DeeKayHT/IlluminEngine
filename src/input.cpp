@@ -5,6 +5,7 @@
 
 #include "SDL/SDL.h"
 
+#include "main.h"
 #include "camera.h"
 
 
@@ -26,7 +27,6 @@ extern Camera gCamera;
 // Local Variables
 // ----------------------------------------------------
 
-static bool gEventQuit = false;
 static bool gKeyPressed[SDL_NUM_SCANCODES] = { 0 };
 static bool gMousePressed[INPUT_MAX_MOUSE_BUTTONS] = { 0 };
 static int32_t gMouseMotionRel[2] = { 0 };	// Relative mouse motion
@@ -39,7 +39,6 @@ static int32_t gMouseWheelMotion = 0;
 
 // ----------------------------------------------------
 
-bool Input_GetQuitStatus()						{ return gEventQuit; }
 bool Input_GetKeyPressStatus(int scancode)		{ return gKeyPressed[scancode]; }
 bool Input_GetMousePressStatus(int buttonIndex)	{ return gMousePressed[buttonIndex]; }
 int32_t Input_GetMouseMotionRelative()			{ return gMouseWheelMotion; }
@@ -67,7 +66,7 @@ void Input_Process()
 		switch (event.type)
 		{
 		case SDL_QUIT:
-			gEventQuit = true;
+			Game_SetQuitStatus(true);
 			break;
 
 		case SDL_KEYDOWN:
@@ -98,7 +97,7 @@ void Input_Process()
 	}
 	// Have Esc also quit!
 	if (gKeyPressed[SDL_SCANCODE_ESCAPE]) {
-		gEventQuit = true;
+		Game_SetQuitStatus(true);
 	}
 
 
